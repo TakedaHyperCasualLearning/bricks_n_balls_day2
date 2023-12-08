@@ -7,7 +7,7 @@ public class StageManager : MonoBehaviour
     [SerializeField] BlockManager blockManager = null;
 
     private int BLOCK_COUNT_X = 6;
-    private int BLOCK_COUNT_Y = 4;
+    private int BLOCK_COUNT_Y = 5;
     private float STAGE_WIDTH = 6.0f;
     private float STAGE_HEIGHT = 9.0f;
     private float BLOCK_DISTANCE = 1.0f;
