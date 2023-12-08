@@ -8,9 +8,13 @@ public class Ball : MonoBehaviour
     private Vector2 velocity;
     private float radius = 0.0f;
     private float speed = 0.025f;
-    private float screenWidth = 0.0f;
-    private float screenHeight = 0.0f;
+    private float GATHER_SPEED = 0.05f;
+    private float screenWidthHalf = 0.0f;
+    private float screenHeightHalf = 0.0f;
     private bool isMoving = false;
+    private Vector2 firstStopPosition = Vector2.zero;
+    private bool isGather = false;
+    private float stopMargin = 0.05f;
 
     public void Initialize()
     {
@@ -18,8 +22,8 @@ public class Ball : MonoBehaviour
         radius = transform.localScale.x / 2.0f;
 
         // 画面の幅と高さを取得
-        screenWidth = Camera.main.ViewportToWorldPoint(Vector2.one).x * 2.0f;
-        screenHeight = Camera.main.ViewportToWorldPoint(Vector2.one).y * 2.0f;
+        screenWidthHalf = Camera.main.ViewportToWorldPoint(Vector2.one).x;
+        screenHeightHalf = Camera.main.ViewportToWorldPoint(Vector2.one).y;
     }
 
     // Update is called once per frame
@@ -59,23 +63,30 @@ public class Ball : MonoBehaviour
 
     private void CheckBoundsOuterWall()
     {
-        if (transform.position.x - radius < screenWidth * -0.5f)
+        if (transform.position.x - radius < -screenWidthHalf)
         {
             velocity.x = Mathf.Abs(velocity.x);
         }
-        else if (transform.position.x + radius > screenWidth * 0.5f)
+        else if (transform.position.x + radius > screenWidthHalf)
         {
             velocity.x = -Mathf.Abs(velocity.x);
         }
-
-        if (transform.position.y - radius < screenHeight * -0.5f)
-        {
-            velocity.y = Mathf.Abs(velocity.y);
-        }
-        else if (transform.position.y + radius > screenHeight * 0.5f)
+        if (transform.position.y + radius > screenHeightHalf)
         {
             velocity.y = -Mathf.Abs(velocity.y);
         }
+
+        if (transform.position.y - radius < -screenHeightHalf)
+        {
+            velocity = Vector2.zero;
+            transform.position = new Vector3(transform.position.x, -screenHeightHalf + radius + stopMargin, 0.0f);
+            isMoving = false;
+            Debug.Log("transform.position:" + transform.position);
+        }
+
+        if (!isGather) return;
+        transform.position = Vector2.MoveTowards(transform.position, firstStopPosition, GATHER_SPEED);
+        Debug.Log("transform.position:" + transform.position);
     }
 
     public void SetVelocity(Vector2 newVelocity)
@@ -96,6 +107,16 @@ public class Ball : MonoBehaviour
     public bool GetIsMoving()
     {
         return isMoving;
+    }
+
+    public void SetIsGather(bool newIsGather)
+    {
+        isGather = newIsGather;
+    }
+
+    public void SetFirstStopPosition(Vector2 newVector)
+    {
+        firstStopPosition = newVector;
     }
 
 
