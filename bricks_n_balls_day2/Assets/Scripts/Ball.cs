@@ -7,14 +7,14 @@ public class Ball : MonoBehaviour
 {
     private Vector2 velocity;
     private float radius = 0.0f;
-    private float speed = 0.025f;
-    private float GATHER_SPEED = 0.05f;
+    private float speed = 0.03f;
     private float screenWidthHalf = 0.0f;
     private float screenHeightHalf = 0.0f;
     private bool isMoving = false;
     private Vector2 firstStopPosition = Vector2.zero;
     private bool isGather = false;
     private float stopMargin = 0.05f;
+    private float gatherDistance = 0.0f;
 
     public void Initialize()
     {
@@ -81,12 +81,11 @@ public class Ball : MonoBehaviour
             velocity = Vector2.zero;
             transform.position = new Vector3(transform.position.x, -screenHeightHalf + radius + stopMargin, 0.0f);
             isMoving = false;
-            Debug.Log("transform.position:" + transform.position);
+            isGather = true;
         }
 
         if (!isGather) return;
-        transform.position = Vector2.MoveTowards(transform.position, firstStopPosition, GATHER_SPEED);
-        Debug.Log("transform.position:" + transform.position);
+        transform.position = Vector2.MoveTowards(transform.position, firstStopPosition, speed);
     }
 
     public void SetVelocity(Vector2 newVelocity)
@@ -112,6 +111,7 @@ public class Ball : MonoBehaviour
     public void SetIsGather(bool newIsGather)
     {
         isGather = newIsGather;
+
     }
 
     public void SetFirstStopPosition(Vector2 newVector)

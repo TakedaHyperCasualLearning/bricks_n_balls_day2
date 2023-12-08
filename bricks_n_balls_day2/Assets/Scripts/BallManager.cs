@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class BallManager : MonoBehaviour
 {
     [SerializeField] GameObject ballPrefab = null;
+    [SerializeField] TextMeshProUGUI ballCountText = null;
     private List<Ball> ballList = new List<Ball>();
     private Vector2 velocity = Vector2.zero;
     private bool isShot = false;
@@ -15,6 +17,7 @@ public class BallManager : MonoBehaviour
     private float BALL_POOL_MAX = 100;
     private Vector2 firstStopPosition = Vector2.zero;
     private Vector2 START_POSITION = new Vector2(0.0f, -4.5f);
+    private Vector2 TEXT_POSITION_OFFSET = new Vector2(0.0f, 0.25f);
 
     public void Initialize()
     {
@@ -28,6 +31,10 @@ public class BallManager : MonoBehaviour
         }
 
         firstStopPosition = START_POSITION;
+
+        ballCountText.text = "×" + ballList.Count.ToString();
+        ballCountText.transform.position = firstStopPosition + TEXT_POSITION_OFFSET;
+
     }
 
     // Update is called once per frame
@@ -90,9 +97,19 @@ public class BallManager : MonoBehaviour
             if (ballList[i].GetIsMoving()) continue;
 
             stopIndexList.Add(i);
+            ballCountText.text = "×" + stopIndexList.Count.ToString();
         }
 
-        if (stopIndexList.Count == 1) { firstStopPosition = ballList[stopIndexList[0]].transform.position; }
+        if (stopIndexList.Count == 1)
+        {
+            firstStopPosition = ballList[stopIndexList[0]].transform.position;
+            foreach (Ball ball in ballList)
+            {
+                ball.SetFirstStopPosition(firstStopPosition);
+                ballCountText.transform.position = firstStopPosition + TEXT_POSITION_OFFSET;
+            }
+            return;
+        }
 
         if (stopIndexList.Count != ballList.Count) return;
         isAllStop = true;
