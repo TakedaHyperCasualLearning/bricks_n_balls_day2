@@ -32,6 +32,8 @@ public class Launcher : MonoBehaviour
 
     void Update()
     {
+        if (!ballManager.GetIsAllStop()) return;
+
         if (Input.GetMouseButton(0))
         {
             Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
