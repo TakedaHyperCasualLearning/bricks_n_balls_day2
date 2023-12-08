@@ -12,13 +12,15 @@ public class BallManager : MonoBehaviour
     private float SHOT_DELAY = 0.05f;
     private float BALL_POOL_MAX = 100;
 
-    void Start()
+    public void Initialize()
     {
         for (int i = 0; i < BALL_POOL_MAX; i++)
         {
             GameObject ballObject = Instantiate(ballPrefab, Vector3.zero, Quaternion.identity);
             ballObject.transform.parent = this.transform;
-            ballList.Add(ballObject.GetComponent<Ball>());
+            Ball ball = ballObject.GetComponent<Ball>();
+            ball.Initialize();
+            ballList.Add(ball);
         }
     }
 
@@ -51,6 +53,12 @@ public class BallManager : MonoBehaviour
     private void ShotBall()
     {
         ballList[shotCount].SetVelocity(new Vector2(1.0f, 1.0f));
+        ballList[shotCount].SetIsMoving(true);
         shotCount++;
+    }
+
+    public List<Ball> GetBallList()
+    {
+        return ballList;
     }
 }
